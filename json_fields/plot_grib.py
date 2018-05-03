@@ -182,7 +182,7 @@ if __name__ == '__main__':
         #TODO: fileout handling
         fileout=str(args.product) + '+' + str(k).zfill(2)
         out = mm.output(
-            output_name = args.outdir + fileout,
+            output_name = args.outdir + "/" + fileout,
             output_formats=['png'],
             output_name_first_page_number = "off",
             output_width = 1280
