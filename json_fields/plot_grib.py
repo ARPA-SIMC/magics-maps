@@ -107,7 +107,7 @@ if __name__ == '__main__':
                         help='path to json files with fields options (default: ./mm_fields.json)')
     parser.add_argument('-c','--json_coasts', default='mm_italy.json',
                         help='path to json files with area options (default: ./mm_italy.json)')
-    parser.add_argument('product', metavar='prod', help='product to be plotted')
+    parser.add_argument('product', metavar='prod', help='product to be plotted (cfVarName grib key)')
     parser.add_argument('-l', '--level',
                         help='level to be plotted (if different from the product default)')
     parser.add_argument('grib', metavar='file.grib', help='file containing data to be plotted')
