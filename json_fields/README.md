@@ -7,13 +7,14 @@ to produce forecast maps
 
  * `mm_fields.json` contains associations between grib products (the `cfVarName`
  key) and the corrisponding magics function and options.
- * `mm_italy.json` contains `mcoast` settings and others area-realated defaults
+ * `mm_italy.json` and `mm_emro.json` contains `mcoast` settings and others area-related defaults
  * `plot_grib.py` is a draft script to test the plots
 
 
 ## plot_grib.py
 
-The script requires `Magics` and `gribapi` python modules.
+The script requires `Magics` and `gribapi` python modules
+
 
 Run `python plot_grib.py -h` for help:
 ```
