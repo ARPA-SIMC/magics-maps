@@ -38,5 +38,20 @@
                    "subpage_lower_left_latitude": 43.40 ,
                    "subpage_upper_right_longitude": 13.50 ,
                    "subpage_upper_right_latitude": 45.40 ,
-                   "subpage_map_vertical_longitude": 8.00 }
+                   "subpage_map_vertical_longitude": 8.00 },
+  "mlegend":
+                 { "legend" : "on",
+                   "legend_display_type" : "continuous",
+                   "legend_border" : "off",
+                   "legend_text_font_size" : 0.4,
+                   "legend_text_colour" : "black",
+                   "legend_box_mode" : "positional",
+                   "legend_box_x_position" : 27.50,
+                   "legend_box_y_position" : 1.00,
+                   "legend_box_x_length" : 2.00,
+                   "legend_box_y_length" : 14.00,
+                   "legend_title" : "on",
+                   "legend_title_orientation" : "horizontal",
+                   "legend_title_position" : "top",
+                   "legend_title_position_ratio" : 5.0 }
 }

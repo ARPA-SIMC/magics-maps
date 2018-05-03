@@ -57,18 +57,24 @@ def get_grib_metadata(filename, shortname, level=None):
             if level is not None and grib_get_or_none(gid, "level") != level:
                 continue
 
+            global units
+            units=grib_get_or_none(gid, "units")
+            
             # custom scaling options
             global scaling_offset
             global scaling_factor
 
-            if grib_get_or_none(gid, "units") == 'K':
+            if units == 'K':
                 scaling_offset=-273.15
+                units = '°C'
 
-            if grib_get_or_none(gid, "units") == 'm':
+            if units == 'm':
                 scaling_factor = 0.001
+                units = 'mm'
 
-            if grib_get_or_none(gid, "units") == 'pa':
+            if units == 'pa':
                 scaling_factor = 0.01
+                units = 'hPa'
 
             yield gid, grib_get_or_none(gid, "endStep")
             
@@ -99,7 +105,8 @@ def group_grib_metadata_by_fstep(filename, product, level=None):
 
 scaling_factor = 1.0
 scaling_offset = 0.0
-            
+units="n.a."
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Plot grib')
     parser = argparse.ArgumentParser(description='Plot maps from grib file.')
@@ -140,6 +147,7 @@ if __name__ == '__main__':
         # this should/could be set as "json.load" for pyhton3
         mm_coasts = json_load_byteified(json_data)
 
+    print("filtering grib: " + args.grib)
     gb_met = group_grib_metadata_by_fstep(args.grib, args.product, args.level)
 
     os.environ["MAGPLUS_QUIET"] = "true"
@@ -148,24 +156,8 @@ if __name__ == '__main__':
     bg = mm.mcoast(**mm_coasts["background"])
     fg = mm.mcoast(**mm_coasts["foreground"])
 
-    #TODO: legend_title_text="<grib_info key='units'/>"
-    legend = mm.mlegend(
-        legend='on',
-        legend_display_type='continuous',
-        legend_border='off',
-        legend_text_font_size=0.8,
-        legend_text_colour="black",
-        legend_box_mode ='positional',
-        legend_box_x_position=26.,
-        legend_box_y_position=1.00,
-        legend_box_x_length=2.00,
-        legend_box_y_length=16.00,
-        legend_title='on',
-        legend_title_orientation='horizontal',
-        legend_title_position='top',
-        legend_title_position_ratio=5.
-    )
-
+    mm_coasts["mlegend"]["legend_title_text"] = units
+    legend = mm.mlegend(**mm_coasts["mlegend"])
     
     for k, v in gb_met.iteritems():
         print("processing: " + args.product + " +" + str(k).zfill(2))
