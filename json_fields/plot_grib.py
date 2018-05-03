@@ -48,15 +48,28 @@ def get_grib_metadata(filename, shortname, level=None):
         # Itero sui messaggi GRIB
         while True:
             gid = gribapi.grib_new_from_file(fp)
-            # Quando è None, non ho più messaggi
+            # when None, there are no more messages
             if gid is None:
                 break
-            # Il messaggio GRIB desiderato deve avere i seguenti metadati
+            # grib message should have these metadata
             if grib_get_or_none(gid, "cfVarName") != shortname:
                 continue
             if level is not None and grib_get_or_none(gid, "level") != level:
                 continue
-            
+
+            # custom scaling options
+            if grib_get_or_none(gid, "units") == 'K':
+                global scaling_offset
+                scaling_offset=-273.15
+
+            if grib_get_or_none(gid, "units") == 'm':
+                global scaling_factor
+                scaling_factor = 0.001
+
+            if grib_get_or_none(gid, "units") == 'pa':
+                global scaling_factor
+                scaling_factor = 0.01
+
             yield gid, grib_get_or_none(gid, "endStep")
             
 
@@ -84,6 +97,8 @@ def group_grib_metadata_by_fstep(filename, product, level=None):
         return metadata
 
 
+scaling_factor = 1.0
+scaling_offset = 0.0
             
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Plot grib')
@@ -115,7 +130,8 @@ if __name__ == '__main__':
     if not os.path.isdir(args.outdir):
         sys.stderr.write('output path specified (' + args.outdir + ') is not a directory\n\n')
         sys.exit(2)
-    
+
+        
     with open(args.json_fields) as json_data:
         # this should/could be set as "json.load" for pyhton3
         mm_fields = json_load_byteified(json_data)
@@ -123,7 +139,7 @@ if __name__ == '__main__':
     with open(args.json_coasts) as json_data:
         # this should/could be set as "json.load" for pyhton3
         mm_coasts = json_load_byteified(json_data)
-        
+
     gb_met = group_grib_metadata_by_fstep(args.grib, args.product, args.level)
 
     os.environ["MAGPLUS_QUIET"] = "true"
@@ -153,14 +169,13 @@ if __name__ == '__main__':
     
     for k, v in gb_met.iteritems():
         print("processing: " + args.product + " +" + str(k).zfill(2))
-
-        #TODO: scaling_factor + scaling_offset
+        
         input_data = mm.mgrib(
             grib_input_file_name = args.grib,
             grib_field_position = v,
             grib_automatic_scaling = 'off',
-            grib_scaling_factor = 1.0,
-            grib_scaling_offset = 0.0,
+            grib_scaling_factor = scaling_factor,
+            grib_scaling_offset = scaling_offset,
             grib_automatic_derived_scaling = 'off',
         )
 
