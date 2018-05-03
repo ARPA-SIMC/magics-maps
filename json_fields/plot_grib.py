@@ -58,16 +58,16 @@ def get_grib_metadata(filename, shortname, level=None):
                 continue
 
             # custom scaling options
+            global scaling_offset
+            global scaling_factor
+
             if grib_get_or_none(gid, "units") == 'K':
-                global scaling_offset
                 scaling_offset=-273.15
 
             if grib_get_or_none(gid, "units") == 'm':
-                global scaling_factor
                 scaling_factor = 0.001
 
             if grib_get_or_none(gid, "units") == 'pa':
-                global scaling_factor
                 scaling_factor = 0.01
 
             yield gid, grib_get_or_none(gid, "endStep")

@@ -2,8 +2,8 @@
                 { "map_grid": "on",
                   "map_grid_latitude_reference" : 45.0 ,
                   "map_grid_longitude_reference": 0.0 ,
-                  "map_grid_longitude_increment": 2.5 ,
-                  "map_grid_latitude_increment" : 2.5 ,
+                  "map_grid_longitude_increment": 1.0 ,
+                  "map_grid_latitude_increment" : 1.0 ,
                   "map_grid_colour" : "grey",
                   "map_grid_line_style" : "dash",
                   "map_label_colour" : "black",
@@ -33,10 +33,10 @@
                    "map_coastline_land_shade": "off",
                    "map_coastline_sea_shade ": "off"},
   "mmap":
-                 { "subpage_map_projection" :"cylindrical",
-                   "subpage_lower_left_longitude": 2.50 ,
-                   "subpage_lower_left_latitude": 35.00 ,
-                   "subpage_upper_right_longitude": 22.00 ,
-                   "subpage_upper_right_latitude": 50.00 ,
+                 { "subpage_map_projection" :"mercator",
+                   "subpage_lower_left_longitude": 9.00 ,
+                   "subpage_lower_left_latitude": 43.40 ,
+                   "subpage_upper_right_longitude": 13.50 ,
+                   "subpage_upper_right_latitude": 45.40 ,
                    "subpage_map_vertical_longitude": 8.00 }
 }
