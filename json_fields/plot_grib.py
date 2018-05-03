@@ -105,7 +105,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot maps from grib file.')
     parser.add_argument('-j','--json_fields', default='mm_fields.json',
                         help='path to json files with fields options (default: ./mm_fields.json)')
-    parser.add_argument('-c','--json_coasts', default='mm_coasts.json',
+    parser.add_argument('-c','--json_coasts', default='mm_italy.json',
                         help='path to json files with area options (default: ./mm_italy.json)')
     parser.add_argument('product', metavar='prod', help='product to be plotted')
     parser.add_argument('-l', '--level',
