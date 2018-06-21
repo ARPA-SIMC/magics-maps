@@ -68,7 +68,8 @@ def get_grib_metadata(filename, shortname, level=None):
                 scaling_offset=-273.15
                 units = '°C'
 
-            if units == 'm':
+            # precipitations should be in mm
+            if units == 'm' and grib_get_or_none(gid, "cfVarName") != 'hzerocl':
                 scaling_factor = 0.001
                 units = 'mm'
 
@@ -181,7 +182,7 @@ if __name__ == '__main__':
         )
 
         title = mm.mtext(
-            text_lines  = ["<grib_info key='name'/> -  <grib_info key='valid-date'/>"],
+            text_lines  = ["<grib_info key='nameECMF'/> -  <grib_info key='valid-date'/>"],
             text_colour = 'black',
             text_font_size = 1.0,
             text_justification = "left",
