@@ -114,6 +114,62 @@ def group_grib_metadata_by_fstep(filename, product, level=None):
         return metadata
 
 
+def plot_products(*product):
+    print("filtering grib: " + args.grib)
+    gb_met = group_grib_metadata_by_fstep(args.grib, product[0], args.level)
+
+    os.environ["MAGPLUS_QUIET"] = "true"
+    
+    area = mm.mmap(**mm_coasts["mmap"])
+    bg = mm.mcoast(**mm_coasts["background"])
+    fg = mm.mcoast(**mm_coasts["foreground"])
+
+    mm_coasts["mlegend"]["legend_title_text"] = units
+    legend = mm.mlegend(**mm_coasts["mlegend"])
+    
+    for k, v in gb_met.iteritems():
+        print("processing: " + product[0] + " +" + str(k).zfill(2))
+        
+        input_data = mm.mgrib(
+            grib_input_file_name = args.grib,
+            grib_field_position = v,
+            grib_automatic_scaling = 'off',
+            grib_scaling_factor = scaling_factor,
+            grib_scaling_offset = scaling_offset,
+            grib_automatic_derived_scaling = 'off',
+        )
+
+        #TODO: fileout handling
+        fileout=str(product[0]) + '+' + str(k).zfill(2)
+        out = mm.output(
+            output_name = args.outdir + "/" + fileout,
+            output_formats=['png'],
+            output_name_first_page_number = "off",
+            output_width = 1280
+        )
+
+        title = mm.mtext(
+            text_lines  = ["<grib_info key='nameECMF'/> -  <grib_info key='valid-date'/>"],
+            text_colour = 'black',
+            text_font_size = 1.0,
+            text_justification = "left",
+            text_font_style='bold',
+            text_mode = 'positional',
+            text_box_X_position = 1.,
+            text_box_Y_position = 17.5
+        )
+
+        # cleanup json for unwanted parameters
+        # (they show up as warnings in Magics output)
+        shading_opt = mm_fields[product[0]].copy()
+        del shading_opt['magic_func']
+        del shading_opt['nameECMF']
+    
+        shading = getattr(mm, mm_fields[product[0]]['magic_func'])(**shading_opt)
+
+        mm.plot(out, area, bg, input_data, shading, legend, fg, title)
+    
+    
 scaling_factor = 1.0
 scaling_offset = 0.0
 units="n.a."
@@ -158,56 +214,5 @@ if __name__ == '__main__':
         # this should/could be set as "json.load" for pyhton3
         mm_coasts = json_load_byteified(json_data)
 
-    print("filtering grib: " + args.grib)
-    gb_met = group_grib_metadata_by_fstep(args.grib, args.product, args.level)
-
-    os.environ["MAGPLUS_QUIET"] = "true"
+    plot_products(args.product)
     
-    area = mm.mmap(**mm_coasts["mmap"])
-    bg = mm.mcoast(**mm_coasts["background"])
-    fg = mm.mcoast(**mm_coasts["foreground"])
-
-    mm_coasts["mlegend"]["legend_title_text"] = units
-    legend = mm.mlegend(**mm_coasts["mlegend"])
-    
-    for k, v in gb_met.iteritems():
-        print("processing: " + args.product + " +" + str(k).zfill(2))
-        
-        input_data = mm.mgrib(
-            grib_input_file_name = args.grib,
-            grib_field_position = v,
-            grib_automatic_scaling = 'off',
-            grib_scaling_factor = scaling_factor,
-            grib_scaling_offset = scaling_offset,
-            grib_automatic_derived_scaling = 'off',
-        )
-
-        #TODO: fileout handling
-        fileout=str(args.product) + '+' + str(k).zfill(2)
-        out = mm.output(
-            output_name = args.outdir + "/" + fileout,
-            output_formats=['png'],
-            output_name_first_page_number = "off",
-            output_width = 1280
-        )
-
-        title = mm.mtext(
-            text_lines  = ["<grib_info key='nameECMF'/> -  <grib_info key='valid-date'/>"],
-            text_colour = 'black',
-            text_font_size = 1.0,
-            text_justification = "left",
-            text_font_style='bold',
-            text_mode = 'positional',
-            text_box_X_position = 1.,
-            text_box_Y_position = 17.5
-        )
-
-        # cleanup json for unwanted parameters
-        # (they show up as warnings in Magics output)
-        shading_opt = mm_fields[args.product].copy()
-        del shading_opt['magic_func']
-        del shading_opt['nameECMF']
-    
-        shading = getattr(mm, mm_fields[args.product]['magic_func'])(**shading_opt)
-
-        mm.plot(out, area, bg, input_data, shading, legend, fg, title)
