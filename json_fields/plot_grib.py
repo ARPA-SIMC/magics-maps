@@ -114,9 +114,9 @@ def group_grib_metadata_by_fstep(filename, product, level=None):
         return metadata
 
 
-def plot_products(*product):
+def plot_products(product):
     print("filtering grib: " + args.grib)
-    gb_met = group_grib_metadata_by_fstep(args.grib, product[0], args.level)
+    gb_met = [ group_grib_metadata_by_fstep(args.grib, p, args.level) for p in product]
 
     os.environ["MAGPLUS_QUIET"] = "true"
     
@@ -127,7 +127,7 @@ def plot_products(*product):
     mm_coasts["mlegend"]["legend_title_text"] = units
     legend = mm.mlegend(**mm_coasts["mlegend"])
     
-    for k, v in gb_met.iteritems():
+    for k, v in gb_met[0].iteritems():
         print("processing: " + product[0] + " +" + str(k).zfill(2))
         
         input_data = mm.mgrib(
@@ -214,5 +214,7 @@ if __name__ == '__main__':
         # this should/could be set as "json.load" for pyhton3
         mm_coasts = json_load_byteified(json_data)
 
-    plot_products(args.product)
-    
+    p = []
+    # TODO: manage multi product name
+    p.append(args.product)
+    plot_products(p)
