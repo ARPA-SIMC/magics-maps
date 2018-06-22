@@ -68,7 +68,17 @@ def get_grib_metadata(filename, shortname, level=None):
                 scaling_offset=-273.15
                 units = '°C'
 
-            # precipitations should be in mm
+            # converting total cloud cover for cosmo in okta
+            if units == '%' and grib_get_or_none(gid, "cfVarName") == 'tcc':
+                scaling_factor = 0.08
+                units = 'okta'
+
+            # converting total cloud cover for ifs-ecmwf in okta
+            if units == '(0 - 1)' and grib_get_or_none(gid, "cfVarName") == 'tcc':
+                scaling_factor = 8.0
+                units = 'okta'
+                
+            # converting precipitations in mm
             if units == 'm' and grib_get_or_none(gid, "cfVarName") != 'hzerocl':
                 scaling_factor = 0.001
                 units = 'mm'
