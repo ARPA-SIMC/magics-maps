@@ -1,5 +1,12 @@
 # magics-maps
 
+## PROJECT DISCONTINUED
+
+**Note: this project is obsoleted and it has been superseded by https://github.com/ARPA-SIMC/arkimaps/**
+
+
+## Description
+
 This repository contains convenience files for common plotting layouts and other resources for [ECMWF Magics](https://software.ecmwf.int/wiki/display/MAGP/Magics).
 
 Maigics and ECCodes are available on ECMWF website:
